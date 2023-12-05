@@ -1,0 +1,24 @@
+{
+  "contacts": [
+    {
+      "name": "Ayra Starr",
+      "number": "08012345678",
+      "id": 1
+    },
+    {
+      "name": "Bad Bunny",
+      "number": "6467875397",
+      "id": 2
+    },
+    {
+      "name": "Ozuna",
+      "number": "09778211000",
+      "id": 3
+    },
+    {
+      "name": "Maluma",
+      "number": "4206969420",
+      "id": 4
+    }
+  ]
+}
