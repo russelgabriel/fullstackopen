@@ -137,6 +137,7 @@ const BodyWrapper = styled.div`
   padding-top: 2rem;
   align-items: baseline;
   box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.2);
+  background-color: #f5f5f5;
 `
 
 const Title = styled.h1`

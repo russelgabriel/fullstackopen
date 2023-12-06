@@ -21,7 +21,7 @@ const GlobalStyles = createGlobalStyle`
 */
 html, body {
   height: 100%;
-  background-color: #f5f5f5;
+  background-color: #fdf6e3;
 }
 
 /*
