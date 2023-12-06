@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components'
+import '@fontsource/poppins'
 
 const GlobalStyles = createGlobalStyle`
 /*
@@ -31,6 +32,7 @@ html, body {
 body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  font-family: 'Poppins', sans-serif;
 }
 
 /*

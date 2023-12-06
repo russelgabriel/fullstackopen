@@ -3,7 +3,7 @@ import styled from 'styled-components'
 const Filter = ({ filter, handleFilterChange }) => {
   return (
     <Wrapper>
-      <label htmlFor="contactFilter">Search for Contact:</label>
+      <Label htmlFor="contactFilter">Search:</Label>
       <Input id="contactFilter" value={filter} onChange={handleFilterChange}/>
     </Wrapper>
   )
@@ -19,6 +19,10 @@ const Wrapper = styled.div`
 
 const Input = styled.input`
   flex: 1;
+`
+
+const Label = styled.label`
+  font-size: 0.9rem;
 `
 
 export default Filter

@@ -5,6 +5,7 @@ import Filter from "./components/Filter"
 import PersonForm from "./components/PersonForm"
 import Contacts from "./components/Contacts"
 import contactServices from "./services/contact"
+import Notification from "./components/Notification"
 
 const App = () => {
   const [people, setPeople] = useState([])
@@ -12,6 +13,8 @@ const App = () => {
   const [name, setName] = useState('')
   const [number, setNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [notiMessage, setNotiMessage] = useState(null)
+  const [alertType, setAlertType] = useState('success')
 
   useEffect(() => {
     contactServices
@@ -35,10 +38,14 @@ const App = () => {
         contactServices
           .updateContact(duplicate.id, newPerson)
           .then(response => {
+            setAlertType('success')
+            setAlert(`Updated ${response.name} successfully`)
             setPeople(people.map(person => person.id !== duplicate.id ? person : response))
           })
           .catch(err => {
-            console.log(err);
+            setAlertType('error')
+            setAlert(`Information of ${duplicate.name} has already been removed from server`)
+            setPeople(people.filter(person => person.id !== duplicate.id))
           })
       }
       setName('')
@@ -50,9 +57,15 @@ const App = () => {
       .createContact(newPerson)
       .then(response => {
         setPeople(people.concat(response))
+        setAlertType('success')
+        setAlert(`Added ${response.name}`)
+        setName('')
+        setNumber('')
       })
-    setName('')
-    setNumber('')
+      .catch(err => {
+        console.log(err);
+        setAlert(err.response.data.error)
+      })
   }
 
   const handleDeleteContact = (id) => {
@@ -61,7 +74,13 @@ const App = () => {
       contactServices
         .deleteContact(id)
         .then(response => {
-          console.log(response);
+          setAlertType('error')
+          setAlert(`Deleted ${contact.name} successfully`)
+          setPeople(people.filter(person => person.id !== id))
+        })
+        .catch(err => {
+          setAlertType('error')
+          setAlert(`Information of ${contact.name} has already been removed from server`)
           setPeople(people.filter(person => person.id !== id))
         })
     }
@@ -79,10 +98,18 @@ const App = () => {
     setFilter(event.target.value)
   }
 
+  const setAlert = (message) => {
+    setNotiMessage(message)
+    setTimeout(() => {
+      setNotiMessage(null)
+    }, 7500)
+  }
+
   const contactsShown = filter.length === 0 ? people : people.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
 
   return (
     <>
+      <Notification message={notiMessage} alertType={alertType}/>
       <BodyWrapper>
         <div>
           <Title>Phonebook</Title>
@@ -103,11 +130,13 @@ const App = () => {
 
 const BodyWrapper = styled.div`
   max-width: 800px;
+  height: 100vh;
   display: flex;
   justify-content: space-around;
   margin: 0 auto;
   padding-top: 2rem;
   align-items: baseline;
+  box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.2);
 `
 
 const Title = styled.h1`
