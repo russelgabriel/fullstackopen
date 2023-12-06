@@ -87,7 +87,7 @@ const App = () => {
         <div>
           <Title>Phonebook</Title>
           <Form>
-            <h2>Add a new</h2>
+            <h2>Add New Contact</h2>
             <PersonForm handleAddContact={handleAddContact} name={name} handleNameChange={handleNameChange} number={number} handleNumberChange={handleNumberChange}/>
           </Form>
         </div>
