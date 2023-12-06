@@ -1,11 +1,6 @@
 {
   "contacts": [
     {
-      "name": "Ayra Starr",
-      "number": "08012345678",
-      "id": 1
-    },
-    {
       "name": "Bad Bunny",
       "number": "6467875397",
       "id": 2
@@ -19,6 +14,36 @@
       "name": "Maluma",
       "number": "4206969420",
       "id": 4
+    },
+    {
+      "name": "Romeo Santos",
+      "number": "09175371000",
+      "id": 5
+    },
+    {
+      "name": "J Balvin",
+      "number": "0192837465",
+      "id": 6
+    },
+    {
+      "name": "Anuel AA",
+      "number": "0987654323100",
+      "id": 7
+    },
+    {
+      "name": "Ayra Starr",
+      "number": "8284211000",
+      "id": 8
+    },
+    {
+      "name": "Tony Dize",
+      "number": "5137826274",
+      "id": 9
+    },
+    {
+      "name": "Adalberto Santiago",
+      "number": "3673126255",
+      "id": 10
     }
   ]
 }
