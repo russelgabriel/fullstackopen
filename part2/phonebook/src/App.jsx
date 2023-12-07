@@ -43,6 +43,7 @@ const App = () => {
             setPeople(people.map(person => person.id !== duplicate.id ? person : response))
           })
           .catch(err => {
+            console.log(err);
             setAlertType('error')
             setAlert(`Information of ${duplicate.name} has already been removed from server`)
             setPeople(people.filter(person => person.id !== duplicate.id))
@@ -74,11 +75,13 @@ const App = () => {
       contactServices
         .deleteContact(id)
         .then(response => {
+          console.log("delete contact response: ", response);
           setAlertType('error')
           setAlert(`Deleted ${contact.name} successfully`)
           setPeople(people.filter(person => person.id !== id))
         })
         .catch(err => {
+          console.log("delete contact error:", err);
           setAlertType('error')
           setAlert(`Information of ${contact.name} has already been removed from server`)
           setPeople(people.filter(person => person.id !== id))
