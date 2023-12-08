@@ -1,15 +1,15 @@
 import CountryList from "./CountryList"
 import SingleCountry from "./SingleCountry"
 
-const Display = ({ countriesFilter, filteredCountries, spotlightCountry, handleExitClick, handleCountryClick }) => {
+const Display = ({ filteredCountries, spotlightCountry, spotlightWeather, handleExitClick, handleCountryClick }) => {
   return (
     <div>
     {
-      countriesFilter.length === 0 || filteredCountries.length === 1
+      filteredCountries.length === 0 || filteredCountries.length === 1 || filteredCountries.length > 10 || spotlightCountry
       ? null
-      : <CountryList filteredCountries={filteredCountries} handleCountryClick={handleCountryClick} spotlightCountry={spotlightCountry}/>
+      : <CountryList filteredCountries={filteredCountries} handleCountryClick={handleCountryClick}/>
     }
-    <SingleCountry country={spotlightCountry} handleExitClick={handleExitClick}/>
+    <SingleCountry country={spotlightCountry} weather={spotlightWeather} handleExitClick={handleExitClick}/>
   </div>
   )
 }
