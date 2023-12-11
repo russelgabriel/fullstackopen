@@ -31,3 +31,8 @@ yarn.lock
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Backend node modules
+backend/node_modules/
+# Ignore all node_modules in any subdirectory
+**/node_modules/

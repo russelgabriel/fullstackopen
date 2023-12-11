@@ -1,0 +1,33 @@
+POST http://localhost:3001/api/contacts/
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "number": "1234567890"
+}
+
+###
+POST http://localhost:3001/api/contacts/
+Content-Type: application/json
+
+{
+  "number": "1234567890"
+}
+
+###
+POST http://localhost:3001/api/contacts/
+Content-Type: application/json
+
+{
+  "name": "Bruh"
+}
+###
+
+POST http://localhost:3001/api/contacts/
+Content-Type: application/json
+
+{
+  "name": "Bad Bunny", 
+  "number": "1234567890"
+}
+

@@ -59,7 +59,7 @@ const CountryCard = styled.div`
   display: flex;
   flex-direction: column;
   margin: 20px;
-  background-color: rgb(236, 235, 235);
+  background-color: #f5f5f5;
 
   border-radius: 8px;
   padding: 20px;
