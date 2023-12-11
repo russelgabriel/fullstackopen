@@ -1,7 +1,15 @@
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
 
 app.use(express.json());
+
+// Define a new token 'body' that gets the request body
+morgan.token('body', (req) => {
+  return req.method === 'POST' ? JSON.stringify(req.body) : '' 
+});
+// Include the 'body' token in the format string
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
 let contacts = 
   [
