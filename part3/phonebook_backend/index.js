@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const app = express();
 
 app.use(express.json());
+app.use(express.static('dist'));
 
 // Define a new token 'body' that gets the request body
 morgan.token('body', (req) => {
@@ -59,10 +60,6 @@ let contacts =
       "id": 10
     }
   ]
-
-app.get('/', (req, res) => {
-  res.send('<h1>Phonebook Backend</h1>');
-})
 
 app.get('/info', (req, res) => {
   const date = new Date()
@@ -128,7 +125,7 @@ app.post('/api/contacts', (req, res) => {
   res.json(contact)
 })
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001; // Fly.io uses PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 })

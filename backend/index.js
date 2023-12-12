@@ -4,6 +4,11 @@ const morgan = require('morgan');
 
 const app = express();
 
+const corsOptions = {
+  origin: 'https://notes-backend-russel.fly.dev/',
+  optionsSuccessStatus: 200
+}
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static('dist'));
