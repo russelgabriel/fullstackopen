@@ -43,10 +43,14 @@ const App = () => {
             setPeople(people.map(person => person.id !== duplicate.id ? person : response))
           })
           .catch(err => {
-            console.log(err);
-            setAlertType('error')
-            setAlert(`Information of ${duplicate.name} has already been removed from server`)
-            setPeople(people.filter(person => person.id !== duplicate.id))
+            if (err.response && err.response.status === 404) {
+              setAlertType('error')
+              setAlert(`Information of ${duplicate.name} has already been removed from server`)
+              setPeople(people.filter(person => person.id !== duplicate.id))
+            } else {
+              setAlertType('error')
+              setAlert(err.response.data.error)
+            }
           })
       }
       setName('')
@@ -65,7 +69,10 @@ const App = () => {
       })
       .catch(err => {
         console.log(err);
+        setAlertType('error')
         setAlert(err.response.data.error)
+        setName('')
+        setNumber('')
       })
   }
 

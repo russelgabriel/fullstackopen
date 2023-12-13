@@ -13,16 +13,25 @@ mongoose.connect(url)
     console.log('error connecting to MongoDB:', error.message);
   });
 
-const contactSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  number: {
-    type: String,
-    required: true,
-  },
-});
+  const contactSchema = new mongoose.Schema({
+    name: {
+      type: String,
+      minlength: 3,
+      required: true,
+    },
+    number: {
+      type: String,
+      minlength: 8,
+      required: true,
+      validate: {
+        validator: function(v) {
+          // This regular expression checks for phone numbers formatted like "123-456-7890" or "(123)456-7890" without spaces
+          return /^(?:\(\d{3}\)|\d{3}-)\d{3}-\d{4}$/.test(v);
+        },
+        message: props => `${props.value} is not a valid phone number!`
+      },
+    }
+  });
 
 contactSchema.set('toJSON', {
   transform: (doc, ret) => {
