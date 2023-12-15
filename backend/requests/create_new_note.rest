@@ -2,15 +2,36 @@ POST http://localhost:3001/api/notes
 Content-Type: application/json
 
 {
-  "content": "Postman is good when testing the backend",
-  "important": true
+  "content": "This is another dummy note",
+  "important": false
 }
 
 ###
+
 POST http://localhost:3001/api/notes
 Content-Type: application/json
 
 {
-  "content": "uh",
+  "content": "Testing dummy note creation",
+  "important": true
+}
+
+###
+
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+
+{
+  "content": "Adding a third dummy note",
+  "important": false
+}
+
+###
+
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+
+{
+  "content": "Creating a fourth dummy note",
   "important": true
 }
