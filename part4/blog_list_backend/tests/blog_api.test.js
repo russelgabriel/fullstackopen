@@ -6,17 +6,17 @@ const Blog = require('../models/blog')
 
 const api = supertest(app)
 
-describe('Blog API', () => {
-  beforeEach(async () => {
-    await Blog.deleteMany({})
+beforeEach(async () => {
+  await Blog.deleteMany({})
 
-    const blogObjects = helper.initialBlogs
-      .map(blog => new Blog(blog))
-    
-    const promiseArray = blogObjects.map(blog => blog.save())
-    await Promise.all(promiseArray)
-  })
+  const blogObjects = helper.initialBlogs
+    .map(blog => new Blog(blog))
+  
+  const promiseArray = blogObjects.map(blog => blog.save())
+  await Promise.all(promiseArray)
+})
 
+describe('GET requests', () => {
   test('blogs are returned as json', async () => {
     await api
       .get('/api/blogs')
@@ -38,7 +38,9 @@ describe('Blog API', () => {
       expect(blog._id).not.toBeDefined()
     })
   })
+})
 
+describe('POST requests', () => {
   test('creating a new blog post', async () => {
     const newBlog = {
       title: 'Test Blog',
@@ -94,9 +96,72 @@ describe('Blog API', () => {
       .send(newBlog)
       .expect(400)
   })
-  
 })
 
+describe('DELETE requests', () => {
+  test('deleting a single blog post', async () => {
+    const blogsBeforeDelete = await helper.blogsInDb()
+    const blogToDelete = blogsBeforeDelete[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+
+    const blogsAfterDelete = await helper.blogsInDb()
+    const titles = blogsAfterDelete.map(blog => blog.title)
+
+    expect(titles).not.toContain(blogToDelete.title)
+    expect(blogsAfterDelete).toHaveLength(blogsBeforeDelete.length - 1)
+  })
+
+  test('deleting a non-existent blog post', async () => {
+    const nonExistentId = await helper.nonExistingId()
+
+    await api
+      .delete(`/api/blogs/${nonExistentId}`)
+      .expect(404)
+  })
+})
+
+describe('PUT requests', () => {
+  test('updating the number of likes for a blog post', async () => {
+    const blogsBeforeUpdate = await helper.blogsInDb()
+    const blogToUpdate = blogsBeforeUpdate[0]
+    const updatedLikes = blogToUpdate.likes + 1
+
+    const updatedBlog = {
+      ...blogToUpdate,
+      likes: updatedLikes
+    }
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAfterUpdate = await helper.blogsInDb()
+    const updatedBlogInDb = blogsAfterUpdate.find(blog => blog.id === blogToUpdate.id)
+
+    expect(updatedBlogInDb.likes).toBe(updatedLikes)
+  })
+
+  test('updating a non-existent blog post', async () => {
+    const nonExistentId = await helper.nonExistingId()
+
+    const updatedBlog = {
+      title: 'Updated Blog',
+      author: 'Updated Author',
+      url: 'https://updatedblog.com',
+      likes: 5
+    }
+
+    await api
+      .put(`/api/blogs/${nonExistentId}`)
+      .send(updatedBlog)
+      .expect(404)
+  })
+})
 
 afterAll(async () => {
   await mongoose.connection.close()
