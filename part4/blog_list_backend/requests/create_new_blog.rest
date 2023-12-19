@@ -7,3 +7,15 @@ Content-Type: application/json
   "url": "http://test.com",
   "likes": 0
 }
+###
+
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyMSIsImlkIjoiNjU4MGU2NzgxZDc4YmJlYzQxZjdiZjJmIiwiaWF0IjoxNzAyOTQ5NDcyLCJleHAiOjE3MDI5NTMwNzJ9.DODN_ygwoE2n2oHEcRnU8QvK8xiGIShPz6sjdsw5u7k
+
+{
+  "title": "me bomboclat",
+  "author": "me bloodclat",
+  "url": "http://test.com",
+  "likes": 0
+}

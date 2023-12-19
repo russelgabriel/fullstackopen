@@ -42,11 +42,21 @@ describe('Note API', () => {
 	test('a valid note can be added', async () => {
 		const newNote = {
 			content: 'async/await simplifies making async calls',
-			important: true
+			important: true,
+			user: '65806a1acaecebf027f3aebb'
 		}
+
+		const loginResponse = await api
+			.post('/api/login')
+			.send({ username: helper.initialUser.username, password: helper.initialUser.password })
+			.expect(200)
+			.expect('Content-Type', /application\/json/)
+
+		const token = loginResponse.body.token
 
 		await api
 			.post('/api/notes')
+			.set('Authorization', `Bearer ${token}`)
 			.send(newNote)
 			.expect(201)
 			.expect('Content-Type', /application\/json/)
@@ -58,12 +68,22 @@ describe('Note API', () => {
 	})
 
 	test('a note without content is not added', async () => {
+		const loginResponse = await api
+			.post('/api/login')
+			.send({ username: helper.initialUser.username, password: helper.initialUser.password })
+			.expect(200)
+			.expect('Content-Type', /application\/json/)
+
+		const token = loginResponse.body.token
+
 		const newNote = {
-			important: true
+			important: true,
+			user: '65806a1acaecebf027f3aebb'
 		}
 
 		await api
 			.post('/api/notes')
+			.set('Authorization', `Bearer ${token}`)
 			.send(newNote)
 			.expect(400)
 			.expect('Content-Type', /application\/json/)
@@ -81,6 +101,9 @@ describe('Note API', () => {
 			.get(`/api/notes/${noteToFetch.id}`)
 			.expect(200)
 			.expect('Content-Type', /application\/json/)
+
+		console.log(noteToFetch)
+		console.log(resultNote.body)
 
 		expect(resultNote.body).toEqual(noteToFetch)
 	})

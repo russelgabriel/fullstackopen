@@ -1,9 +1,11 @@
 POST http://localhost:3001/api/notes
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXIiLCJpZCI6IjY1N2M5Mjg2MzAyN2NmMDBlODhhYTIyZiIsImlhdCI6MTcwMjY2OTE3NCwiZXhwIjoxNzAyNjcyNzc0fQ.VLH5DdiW6_eapOFNN0spucYoK0_aSJd_lcMtw9C21yM
 
 {
   "content": "This is another dummy note",
-  "important": false
+  "important": false,
+  "userId": "657c92863027cf00e88aa22f"
 }
 
 ###
@@ -13,7 +15,8 @@ Content-Type: application/json
 
 {
   "content": "Testing dummy note creation",
-  "important": true
+  "important": true,
+  "userId": "657c92863027cf00e88aa22f"
 }
 
 ###

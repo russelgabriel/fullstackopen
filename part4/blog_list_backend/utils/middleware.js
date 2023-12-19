@@ -24,12 +24,20 @@ const errorHandler = (error, request, response, next) => {
 	} else if (error.name === 'TokenExpiredError') {
 		return response.status(401).json({ error: 'token has expored' })
 	}
-
 	next(error)
+}
+
+const tokenExtractor = (request, response, next) => {
+	const authorization = request.get('authorization')
+	if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+		request.token = authorization.replace('Bearer ', '')
+	}
+	next()
 }
 
 module.exports = {
 	requestLogger,
 	unknownEndpoint,
-	errorHandler
+	errorHandler,
+	tokenExtractor
 }
