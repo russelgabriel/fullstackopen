@@ -1,17 +1,16 @@
-const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
 blogsRouter.get('/', async (request, response, next) => {
 	try {
-    const blogs = await Blog
+		const blogs = await Blog
 			.find({})
 			.populate('user', { username: 1, name: 1, id: 1 })
-    response.json(blogs)
-  } catch (error) {
-    next(error)
-  }
+		response.json(blogs)
+	} catch (error) {
+		next(error)
+	}
 })
 
 blogsRouter.post('/', async (request, response, next) => {
@@ -30,30 +29,35 @@ blogsRouter.post('/', async (request, response, next) => {
 			})
 		}
 
-    if (!blog.title || !blog.url) {
-      return response.status(400).json({
-        error: 'title or url missing'
-      })
-    }
+		if (!blog.title || !blog.url) {
+			return response.status(400).json({
+				error: 'title or url missing'
+			})
+		}
 
-    if (!blog.likes) {
-      blog.likes = 0
-    }
+		if (!blog.likes) {
+			blog.likes = 0
+		}
 
-		const user = request.user
+		const user = await User.findById(request.user)
 		blog.user = user
-    const savedBlog = await blog.save()
-		user.blogs = user.blogs.concat(blog._id)
-		await user.save()
-    response.status(201).json(savedBlog)
-  } catch (error) {
-    next(error)
-  }
+		const savedBlog = await blog.save()
+
+		// Fetch a fresh copy of the user document from the database
+		const freshUser = await User.findById(user._id)
+		freshUser.blogs = freshUser.blogs.concat(savedBlog._id)
+		await freshUser.save()
+
+		response.status(201).json(savedBlog)
+	} catch (error) {
+		console.log(error.name)
+		console.log(error.message)
+		next(error)
+	}
 })
 
 blogsRouter.delete('/:id', async (request, response, next) => {
-  try {
-
+	try {
 		if (!request.token) {
 			return response.status(401).json({
 				error: 'token missing or invalid'
@@ -68,43 +72,44 @@ blogsRouter.delete('/:id', async (request, response, next) => {
 
 		const user = request.user
 
-    const blogToDelete = await Blog.findById(request.params.id)
+
+		const blogToDelete = await Blog.findById(request.params.id)
 		if (!blogToDelete) {
 			return response.status(404).json({
 				error: 'Blog not found'
 			})
 		}
 
-		if (blogToDelete.user.toString() !== user._id.toString()) {
+		if (blogToDelete.user.toString() !== user.toString()) {
 			return response.status(401).json({
 				error: 'unauthorized user'
 			})
 		}
 
 		const deletedBlog = await Blog.deleteOne(blogToDelete)
-    if (!deletedBlog) {
-      return response.status(404).json({
-        error: 'Blog not found'
-      })
-    }
-    response.status(204).end()
-  } catch (error) {
-    next(error)
-  }
+		if (!deletedBlog) {
+			return response.status(404).json({
+				error: 'Blog not found'
+			})
+		}
+		response.status(204).end()
+	} catch (error) {
+		next(error)
+	}
 })
 
 blogsRouter.put('/:id', async (request, response, next) => {
-  try {
-    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, request.body, { new: true })
-    if (!updatedBlog) {
-      return response.status(404).json({
-        error: 'Blog not found'
-      })
-    }
-    response.json(updatedBlog)
-  } catch (error) {
-    next(error)
-  }
+	try {
+		const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, request.body, { new: true })
+		if (!updatedBlog) {
+			return response.status(404).json({
+				error: 'Blog not found'
+			})
+		}
+		response.json(updatedBlog)
+	} catch (error) {
+		next(error)
+	}
 })
 
 module.exports = blogsRouter

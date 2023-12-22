@@ -42,7 +42,7 @@ test('reject short username', async () => {
 		password: 'testpassword'
 	}
 
-	const response = await api
+	await api
 		.post('/api/users')
 		.send(invalidUser)
 		.expect(400)
@@ -56,7 +56,7 @@ test('reject short password', async () => {
 		password: 'a'
 	}
 
-	const response = await api
+	await api
 		.post('/api/users')
 		.send(invalidUser)
 		.expect(400)
@@ -65,16 +65,16 @@ test('reject short password', async () => {
 
 test('reject duplicate username', async () => {
 	const duplicateUser = helper.initialUsers[0]
-	
-	const response = await api
-	.post('/api/users')
-	.send(duplicateUser)
-	.expect(400)
-	.expect('Content-Type', /application\/json/)
+
+	await api
+		.post('/api/users')
+		.send(duplicateUser)
+		.expect(400)
+		.expect('Content-Type', /application\/json/)
 })
 
 
 
 afterAll(async () => {
-  await mongoose.connection.close()
+	await mongoose.connection.close()
 })
