@@ -17,6 +17,8 @@ blogsRouter.post('/', async (request, response, next) => {
 	try {
 		const blog = new Blog(request.body)
 
+		console.log(request.headers)
+
 		if (!request.token) {
 			return response.status(401).json({
 				error: 'token missing or invalid'
@@ -50,8 +52,6 @@ blogsRouter.post('/', async (request, response, next) => {
 
 		response.status(201).json(savedBlog)
 	} catch (error) {
-		console.log(error.name)
-		console.log(error.message)
 		next(error)
 	}
 })

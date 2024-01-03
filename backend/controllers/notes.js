@@ -56,8 +56,8 @@ notesRouter.post('/', async (req, res, next) => {
 			})
 		}
 
-		const user = await User.findById(body.user)
-
+		const user = await User.findById(decodedToken.id)
+		console.log('user', user)
 		if (body.content === undefined) {
 			return res.status(400).json({
 				error: 'content missing'
@@ -67,7 +67,7 @@ notesRouter.post('/', async (req, res, next) => {
 		const note = new Note({
 			content: body.content,
 			important: body.important || false,
-			user: user._id
+			user: user.id
 		})
 
 		const savedNote = await note.save()
