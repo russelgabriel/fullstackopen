@@ -1,49 +1,61 @@
 import styled from 'styled-components'
+import Togglable from './Togglable'
+import { useState, useRef } from 'react'
 
-const NewBlogForm = ({
-	handleCreateBlog,
-	handleTitleChange,
-	handleAuthorChange,
-	handleUrlChange,
-	title,
-	author,
-	url
-}) => {
+const NewBlogForm = ({ handleCreateBlog }) => {
+
+	const [title, setTitle] = useState('')
+	const [author, setAuthor] = useState('')
+	const [url, setUrl] = useState('')
+
+	const togglableRef = useRef()
+
+	const onSubmit = (event) => {
+		event.preventDefault()
+		handleCreateBlog({ title, author, url })
+		setTitle('')
+		setAuthor('')
+		setUrl('')
+		togglableRef.current.toggleVisibility()
+	}
+
 	return (
 		<Wrapper>
-			<Form onSubmit={handleCreateBlog}>
-				<h2>Add blog</h2>
-				<InputField>
-					<label htmlFor="title">Title</label>
-					<StyledInput
-						type="text"
-						id="title"
-						onChange={handleTitleChange}
-						value={title}
-					/>
-				</InputField>
-				<InputField>
-					<label htmlFor="author">Author</label>
-					<StyledInput
-						type="text"
-						id="author"
-						onChange={handleAuthorChange}
-						value={author}
-					/>
-				</InputField>
-				<InputField>
-					<label htmlFor="URL">URL</label>
-					<StyledInput
-						type="text"
-						id="URL"
-						onChange={handleUrlChange}
-						value={url}
-					/>
-				</InputField>
-				<InputField>
-					<Button type="submit">Add</Button>
-				</InputField>
-			</Form>
+			<Togglable buttonLabel="Add blog" ref={togglableRef}>
+				<Form onSubmit={onSubmit}>
+					<h2>Add blog</h2>
+					<InputField>
+						<label htmlFor="title">Title</label>
+						<StyledInput
+							type="text"
+							id="title"
+							onChange={event => setTitle(event.target.value)}
+							value={title}
+						/>
+					</InputField>
+					<InputField>
+						<label htmlFor="author">Author</label>
+						<StyledInput
+							type="text"
+							id="author"
+							onChange={event => setAuthor(event.target.value)}
+							value={author}
+						/>
+					</InputField>
+					<InputField>
+						<label htmlFor="URL">URL</label>
+						<StyledInput
+							type="text"
+							id="URL"
+							onChange={event => setUrl(event.target.value)}
+							value={url}
+						/>
+					</InputField>
+					<InputField>
+						<Button type="submit">Add</Button>
+					</InputField>
+				</Form>
+			</Togglable>
 		</Wrapper>
 	)
 }

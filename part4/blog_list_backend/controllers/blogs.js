@@ -100,6 +100,10 @@ blogsRouter.delete('/:id', async (request, response, next) => {
 
 blogsRouter.put('/:id', async (request, response, next) => {
 	try {
+		const blogData = request.body
+		if (blogData.user && typeof blogData.user === 'object' && blogData.user.id) {
+			blogData.user = blogData.user.id
+		}
 		const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, request.body, { new: true })
 		if (!updatedBlog) {
 			return response.status(404).json({

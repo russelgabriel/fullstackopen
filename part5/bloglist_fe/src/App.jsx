@@ -7,17 +7,23 @@ import loginService from './services/login'
 
 const App = () => {
 	const [blogs, setBlogs] = useState([])
-	const [username, setUsername] = useState('')
-	const [password, setPassword] = useState('')
 	const [user, setUser] = useState(null)
 	const [showNotification, setShowNotification] = useState(false)
 	const [notificationMessage, setNotificationMessage] = useState('')
 	const [notificationType, setNotificationType] = useState('') // 'error' or 'success'
 
 	useEffect(() => {
-		blogService.getAll().then(initBlogs =>
-			setBlogs(initBlogs)
-		)
+		const fetchBlogs = async () => {
+			try {
+				let initBlogs = await blogService.getAll()
+				initBlogs = initBlogs.sort((a, b) => b.likes - a.likes)
+				setBlogs(initBlogs)
+			} catch (error) {
+				console.log(error)
+			}
+		}
+
+		fetchBlogs()
 	}, [])
 
 	useEffect(() => {
@@ -29,28 +35,17 @@ const App = () => {
 		}
 	}, [])
 
-	const handleUsernameChange = event => {
-		setUsername(event.target.value)
-	}
-
-	const handlePasswordChange = event => {
-		setPassword(event.target.value)
-	}
-
-	const handleLogin = async (event) => {
-		event.preventDefault()
+	const handleLogin = async ({ username, password }) => {
 		try {
 			const user = await loginService.login({ username, password })
 			window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
 			setUser(user)
+			blogService.setToken(user.token)
 			setShowNotification(false)
 		} catch (error) {
 			setNotificationType('error')
 			setNotificationMessage('Incorrect username or password')
 			setShowNotification(true)
-		} finally {
-			setUsername('')
-			setPassword('')
 		}
 	}
 
@@ -70,10 +65,6 @@ const App = () => {
 				/>
 				<LoginForm
 					handleLogin={handleLogin}
-					handleUsernameChange={handleUsernameChange}
-					handlePasswordChange={handlePasswordChange}
-					username={username}
-					password={password}
 				/>
 			</div>
 		)

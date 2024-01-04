@@ -60,6 +60,7 @@ const Wrapper = styled.div`
 	border-radius: 5px;
 	animation: ${({ $visible }) => ($visible ? slideIn : slideOut)} 0.5s ease-in-out;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
 
   ${({ $type }) =>
     $type === 'success' &&

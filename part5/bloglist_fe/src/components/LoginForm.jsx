@@ -1,24 +1,28 @@
 import styled from 'styled-components'
+import { useState } from 'react'
 
-const LoginForm = ({
-	handleLogin,
-	handleUsernameChange,
-	handlePasswordChange,
-	username,
-	password
-	}) => {
+const LoginForm = ({ handleLogin }) => {
+	const [username, setUsername] = useState('')
+	const [password, setPassword] = useState('')
+
+	const onLogin = event => {
+		event.preventDefault()
+		handleLogin({ username, password })
+		setUsername('')
+		setPassword('')
+	}
 
 	return (
 		<Wrapper>
-			<Form onSubmit={handleLogin}>
+			<Form onSubmit={onLogin}>
 				<Header>Log in to Blogs List</Header>
 				<InputField>
 					username
-					<input onChange={handleUsernameChange} value={username}/>
+					<input onChange={event => setUsername(event.target.value)} value={username}/>
 				</InputField>
 				<InputField>
 					password
-					<input onChange={handlePasswordChange} type='password' value={password}/>
+					<input onChange={event => setPassword(event.target.value)} type='password' value={password}/>
 				</InputField>
 				<Button type="submit">login</Button>
 			</Form>

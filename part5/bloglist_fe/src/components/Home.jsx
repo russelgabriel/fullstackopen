@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { useState } from 'react'
 import blogService from '../services/blogs'
 import Blogs from './Blogs'
 import Header from './Header'
@@ -16,12 +15,8 @@ const Home = ({
 	setShowNotification,
 	setNotificationType
 }) => {
-	const [title, setTitle] = useState('')
-	const [author, setAuthor] = useState('')
-	const [url, setUrl] = useState('')
 
-	const handleCreateBlog = async (event) => {
-		event.preventDefault()
+	const handleCreateBlog = async ({ title, author, url }) => {
 		try {
 			const newBlog = await blogService.create({ title, author, url })
 			setBlogs(blogs.concat(newBlog))
@@ -33,37 +28,53 @@ const Home = ({
 			setNotificationType('error')
 			setNotificationMessage('Error creating blog')
 			setShowNotification(true)
-		} finally {
-			setTitle('')
-			setAuthor('')
-			setUrl('')
 		}
 	}
 
-	const handleTitleChange = (event) => {
-		setTitle(event.target.value)
+	const handleLikeBlog = async (blog) => {
+		try {
+			const newBlog = {...blog, likes: blog.likes + 1}
+			await blogService.update(blog.id, newBlog)
+			let newBlogs = await blogService.getAll()
+			newBlogs = newBlogs.sort((a, b) => b.likes - a.likes)
+			setBlogs(newBlogs)
+			setNotificationType('success')
+			setNotificationMessage(`you liked ${blog.title}`)
+			setShowNotification(true)
+		} catch (error) {
+			console.log(error)
+			setNotificationType('error')
+			setNotificationMessage('Error liking blog')
+			setShowNotification(true)
+		}
 	}
 
-	const handleAuthorChange = (event) => {
-		setAuthor(event.target.value)
-	}
-
-	const handleUrlChange = (event) => {
-		setUrl(event.target.value)
+	const handleDeleteBlog = async (blog) => {
+		try {
+			if (!window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+				return
+			}
+			await blogService.remove(blog.id)
+			let newBlogs = await blogService.getAll()
+			newBlogs = newBlogs.sort((a, b) => b.likes - a.likes)
+			setBlogs(newBlogs)
+			setNotificationType('success')
+			setNotificationMessage(`you deleted ${blog.title}`)
+			setShowNotification(true)
+		} catch (error) {
+			console.log(error)
+			setNotificationType('error')
+			setNotificationMessage('Error deleting blog')
+			setShowNotification(true)
+		}
 	}
 
 	return (
 		<GridContainer>
 			<Header user={user} handleLogout={handleLogout} />
-			<Blogs blogs={blogs} />
+			<Blogs blogs={blogs} user={user} handleLikeBlog={handleLikeBlog} handleDeleteBlog={handleDeleteBlog}/>
 			<NewBlogForm
 				handleCreateBlog={handleCreateBlog}
-				handleTitleChange={handleTitleChange}
-				handleAuthorChange={handleAuthorChange}
-				handleUrlChange={handleUrlChange}
-				title={title}
-				author={author}
-				url={url}
 			/>
 		</GridContainer>
 	)
