@@ -57,7 +57,7 @@ const App = () => {
 	if (!user) {
 		return (
 			<div>
-				<Notification 
+				<Notification
 					message={notificationMessage}
 					isVisible={showNotification}
 					onHide={() => setShowNotification(false)}
@@ -72,7 +72,7 @@ const App = () => {
 
 	return (
 		<div>
-			<Notification 
+			<Notification
 				message={notificationMessage}
 				isVisible={showNotification}
 				onHide={() => setShowNotification(false)}

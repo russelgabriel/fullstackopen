@@ -1,4 +1,4 @@
-import Blog from "./Blog"
+import Blog from './Blog'
 import styled from 'styled-components'
 
 const Blogs = ({ blogs, user, handleLikeBlog, handleDeleteBlog }) => {

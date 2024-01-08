@@ -9,17 +9,18 @@ const Blog = ({ blog, user, handleLikeBlog, handleDeleteBlog }) => {
 
 	return (
 		<BlogCard>
-			<h2>{blog.title}</h2>
-			<p>by <i>{blog.author}</i></p>
-			<br />
-			<Togglable buttonLabel="view">
+			<div className="shown-content">
+				<h2>{blog.title}</h2>
+				<p>by <i>{blog.author}</i></p>
+			</div>
+			<Togglable buttonLabel="view" className="hidden-content">
 				<p>{blog.url}</p>
 				<p>{blog.likes} likes<button onClick={onLike}>like</button></p>
 				<p>added by {blog.user.name}</p>
 				{
 					user.username === blog.user.username
-					? <DeleteButton onClick={() => handleDeleteBlog(blog)}>remove</DeleteButton>
-					: null
+						? <DeleteButton onClick={() => handleDeleteBlog(blog)}>remove</DeleteButton>
+						: null
 				}
 			</Togglable>
 		</BlogCard>
@@ -34,6 +35,7 @@ const BlogCard = styled.div`
 	border-radius: 8px;
 	background-color: white;
 	box-shadow: 0 0 4px 0 grey;
+	gap: 0.5rem;
 
 	& > h2 {
 		font-size: 1.25rem;

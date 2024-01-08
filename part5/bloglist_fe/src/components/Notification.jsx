@@ -2,36 +2,36 @@ import styled, { keyframes, css } from 'styled-components'
 import { useState, useEffect } from 'react'
 
 const Notification = ({ message, isVisible, onHide, type }) => {
-  const [visible, setVisible] = useState(false);
-  const [shouldRender, setShouldRender] = useState(isVisible);
+	const [visible, setVisible] = useState(false)
+	const [shouldRender, setShouldRender] = useState(isVisible)
 
-  useEffect(() => {
-    if (isVisible) {
-      setShouldRender(true);
-      setVisible(true);
-    } else {
-      setVisible(false);
-      setTimeout(() => setShouldRender(false), 500); // delay should match animation duration
-    }
-  }, [isVisible]);
+	useEffect(() => {
+		if (isVisible) {
+			setShouldRender(true)
+			setVisible(true)
+		} else {
+			setVisible(false)
+			setTimeout(() => setShouldRender(false), 500) // delay should match animation duration
+		}
+	}, [isVisible])
 
-  useEffect(() => {
-    if (isVisible) {
-      const timeout = setTimeout(() => {
-        setVisible(false);
-        onHide();
-      }, 3000);
+	useEffect(() => {
+		if (isVisible) {
+			const timeout = setTimeout(() => {
+				setVisible(false)
+				onHide()
+			}, 3000)
 
-      return () => clearTimeout(timeout);
-    }
-  }, [isVisible, onHide]);
+			return () => clearTimeout(timeout)
+		}
+	}, [isVisible, onHide])
 
-  return shouldRender ? (
-    <Wrapper $visible={visible} $type={type}>
-      {message}
-    </Wrapper>
-  ) : null;
-};
+	return shouldRender ? (
+		<Wrapper $visible={visible} $type={type}>
+			{message}
+		</Wrapper>
+	) : null
+}
 
 // Keyframe animation for sliding in and out
 const slideIn = keyframes`
@@ -41,7 +41,7 @@ const slideIn = keyframes`
   to {
     transform: translateX(0);
   }
-`;
+`
 
 const slideOut = keyframes`
   from {
@@ -50,7 +50,7 @@ const slideOut = keyframes`
   to {
     transform: translateX(100%);
   }
-`;
+`
 
 const Wrapper = styled.div`
 	position: fixed;
@@ -63,14 +63,14 @@ const Wrapper = styled.div`
 	z-index: 1000;
 
   ${({ $type }) =>
-    $type === 'success' &&
+		$type === 'success' &&
     css`
       background-color: #dff0d8;
       color: #3c763d;
     `}
 
   ${({ $type }) =>
-    $type === 'error' &&
+		$type === 'error' &&
     css`
       background-color: #f2dede;
       color: #a94442;

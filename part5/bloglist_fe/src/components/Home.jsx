@@ -33,7 +33,7 @@ const Home = ({
 
 	const handleLikeBlog = async (blog) => {
 		try {
-			const newBlog = {...blog, likes: blog.likes + 1}
+			const newBlog = { ...blog, likes: blog.likes + 1 }
 			await blogService.update(blog.id, newBlog)
 			let newBlogs = await blogService.getAll()
 			newBlogs = newBlogs.sort((a, b) => b.likes - a.likes)
