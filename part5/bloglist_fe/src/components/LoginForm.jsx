@@ -18,11 +18,11 @@ const LoginForm = ({ handleLogin }) => {
 				<Header>Log in to Blogs List</Header>
 				<InputField>
 					username
-					<input onChange={event => setUsername(event.target.value)} value={username}/>
+					<input onChange={event => setUsername(event.target.value)} value={username} name='username'/>
 				</InputField>
 				<InputField>
 					password
-					<input onChange={event => setPassword(event.target.value)} type='password' value={password}/>
+					<input onChange={event => setPassword(event.target.value)} type='password' value={password} name='password'/>
 				</InputField>
 				<Button type="submit">login</Button>
 			</Form>

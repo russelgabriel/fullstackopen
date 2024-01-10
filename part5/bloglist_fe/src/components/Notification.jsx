@@ -27,7 +27,7 @@ const Notification = ({ message, isVisible, onHide, type }) => {
 	}, [isVisible, onHide])
 
 	return shouldRender ? (
-		<Wrapper $visible={visible} $type={type}>
+		<Wrapper $visible={visible} $type={type} id='notification'>
 			{message}
 		</Wrapper>
 	) : null

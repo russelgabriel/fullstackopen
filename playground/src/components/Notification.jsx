@@ -5,7 +5,7 @@ const Notification = ({ message }) => {
     return null
   }
   return (
-    <NotiWrapper>
+    <NotiWrapper className='notification'>
       {message}
     </NotiWrapper>
   )

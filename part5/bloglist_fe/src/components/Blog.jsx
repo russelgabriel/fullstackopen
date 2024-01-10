@@ -8,14 +8,14 @@ const Blog = ({ blog, user, handleLikeBlog, handleDeleteBlog }) => {
 	}
 
 	return (
-		<BlogCard>
+		<BlogCard className='blog'>
 			<div className="shown-content">
 				<h2>{blog.title}</h2>
 				<p>by <i>{blog.author}</i></p>
 			</div>
 			<Togglable buttonLabel="view" className="hidden-content">
 				<p>{blog.url}</p>
-				<p>{blog.likes} likes<button onClick={onLike}>like</button></p>
+				<p>likes: {blog.likes}<button onClick={onLike}>like</button></p>
 				<p>added by {blog.user.name}</p>
 				{
 					user.username === blog.user.username
