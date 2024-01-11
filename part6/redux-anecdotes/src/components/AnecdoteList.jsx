@@ -17,15 +17,14 @@ const Anecdote = ({ anecdote, handleClick }) => {
 
 const AnecdoteList = () => {
 	const dispatch = useDispatch()
-  const anecdotes = useSelector(state => 
-		state.anecdotes.sort((a, b) => b.votes - a.votes)
-	)
+  const anecdotes = useSelector(state => state.anecdotes)
+	const sortedAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes)
 
 	const filteredAnecdotes = useSelector(state => {
 		const filter = state.filter
 		return filter === ''
-			? anecdotes
-			: anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(filter.filter.toLowerCase()))
+			? sortedAnecdotes
+			: sortedAnecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase()))
 	})
 
 	const handleVote = (id) => {
