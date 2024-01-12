@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+import noteService from '../services/notes'
+
 const generateId = () => {
 	return Number((Math.random() * 1000000).toFixed(0))
 }
@@ -8,10 +10,6 @@ const noteSlice = createSlice({
 	name: 'notes',
 	initialState: [],
 	reducers: {
-		createNote(state, action) {
-			const content = action.payload
-			state.push(action.payload)
-		},
 		toggleImportanceOf(state, action) {
 			const toggledNote = action.payload
 
@@ -28,5 +26,22 @@ const noteSlice = createSlice({
 	}
 })
 
-export const { createNote, toggleImportanceOf, appendNote, setNotes } = noteSlice.actions
+export const { toggleImportanceOf, appendNote, setNotes } = noteSlice.actions
+
+// Thunk combines async service call and action dispatch into one function
+// Thunk is a function that wraps an expression to delay its evaluation
+export const initializeNotes = () => {
+	return async dispatch => {
+		const notes = await noteService.getAll()
+		dispatch(setNotes(notes))
+	}
+}
+
+export const createNote = (content) => {
+	return async dispatch => {
+		const newNote = await noteService.createNew(content)
+		dispatch(appendNote(newNote))
+	}
+}
+
 export default noteSlice.reducer

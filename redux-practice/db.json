@@ -2,23 +2,28 @@
   "notes": [
     {
       "content": "the app state is in redux store",
-      "important": true,
+      "important": false,
       "id": 1
     },
     {
       "content": "state changes are made with actions",
-      "important": true,
+      "important": false,
       "id": 2
     },
     {
       "content": "bomboclat",
-      "important": false,
+      "important": true,
       "id": 3
     },
     {
       "content": "bloodclat",
       "important": true,
       "id": 4
+    },
+    {
+      "content": "wag wan",
+      "important": false,
+      "id": 5
     }
   ]
 }
