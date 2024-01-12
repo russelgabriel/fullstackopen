@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { toggleImportanceOf } from './reducers/noteReducer'
+import { toggleImportanceOf } from '../reducers/noteReducer'
+import noteService from '../services/notes'
 
 // Presentational component
 // Only responsible for rendering
@@ -25,8 +26,11 @@ const Notes = () => {
 		}
 	})
 
-	const toggleImportance = (id) => {
-		dispatch(toggleImportanceOf(id))
+	const toggleImportance = async (id) => {
+		const note = notes.find(note => note.id === id)
+		const changedNote = { ...note, important: !note.important }
+		const updatedNote = await noteService.update(id, changedNote)
+		dispatch(toggleImportanceOf(updatedNote))
 	}
 	return (
 		<ul>

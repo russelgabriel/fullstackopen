@@ -1,4 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
+
+import anecdoteService from '../services/anecdotes'
 import { vote } from '../reducers/anecdoteReducer'
 
 import Filter from './Filter'
@@ -27,8 +29,11 @@ const AnecdoteList = () => {
 			: sortedAnecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase()))
 	})
 
-	const handleVote = (id) => {
-		dispatch(vote(id))
+	const handleVote = async (id) => {
+		const anecdoteToVote = anecdotes.find(anecdote => anecdote.id === id)
+		const newObject = {...anecdoteToVote, votes: anecdoteToVote.votes + 1}
+		const updatedAnecdote = await anecdoteService.update(id, newObject)
+		dispatch(vote(updatedAnecdote))
 	}
 
 	return (
