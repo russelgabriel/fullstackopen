@@ -12,7 +12,7 @@
     },
     {
       "content": "bomboclat",
-      "important": true,
+      "important": false,
       "id": 3
     },
     {
@@ -24,6 +24,21 @@
       "content": "wag wan",
       "important": false,
       "id": 5
+    },
+    {
+      "content": "pussyclat",
+      "important": true,
+      "id": 6
+    },
+    {
+      "content": "bruh",
+      "important": false,
+      "id": 7
+    },
+    {
+      "content": "my guy",
+      "important": true,
+      "id": 8
     }
   ]
 }
