@@ -7,6 +7,10 @@ const Blog = ({ blog, user, handleLikeBlog, handleDeleteBlog }) => {
 		handleLikeBlog(blog)
 	}
 
+	const onDelete = () => {
+		handleDeleteBlog(blog)
+	}
+
 	return (
 		<BlogCard className='blog'>
 			<div className="shown-content">
@@ -19,7 +23,7 @@ const Blog = ({ blog, user, handleLikeBlog, handleDeleteBlog }) => {
 				<p>added by {blog.user.name}</p>
 				{
 					user.username === blog.user.username
-						? <DeleteButton onClick={() => handleDeleteBlog(blog)}>remove</DeleteButton>
+						? <DeleteButton onClick={onDelete}>remove</DeleteButton>
 						: null
 				}
 			</Togglable>

@@ -1,23 +1,15 @@
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
-
-import { setNotification } from "../redux/reducers/notificationReducer";
-import { likeBlog } from "../redux/reducers/blogsReducer";
 
 import Togglable from "./Togglable";
 
-const Blog = ({ blog, user, handleDeleteBlog }) => {
-	const dispatch = useDispatch()
-  const onLike = () => {
-    dispatch(likeBlog(blog));
-		// const notificationConfig = {
-		// 	message: `You liked ${blog.title} by ${blog.author}`,
-		// 	type: 'success',
-		// 	timeout: 5,
-		// }
-		// dispatch(setNotification(notificationConfig))
-  };
+const Blog = ({ blog, user, handleLikeBlog, handleDeleteBlog }) => {
+	const onLike = () => {
+		handleLikeBlog(blog)
+	}
 
+	const onDelete = () => {
+		handleDeleteBlog(blog)
+	}
   return (
     <BlogCard className="blog">
       <div className="shown-content">
@@ -34,7 +26,7 @@ const Blog = ({ blog, user, handleDeleteBlog }) => {
         </p>
         <p>added by {blog.user.name}</p>
         {user.username === blog.user.username ? (
-          <DeleteButton onClick={() => handleDeleteBlog(blog)}>
+          <DeleteButton onClick={onDelete}>
             remove
           </DeleteButton>
         ) : null}

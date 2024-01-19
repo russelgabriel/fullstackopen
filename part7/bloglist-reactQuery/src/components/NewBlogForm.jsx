@@ -1,8 +1,16 @@
 import styled from 'styled-components'
-import Togglable from './Togglable'
 import { useState, useRef } from 'react'
+import { useQueryClient, useMutation } from '@tanstack/react-query'
+import { setNotification } from '../context/NotificationContext'
+import { useNotificationDispatch } from '../context/NotificationContext'
 
-const NewBlogForm = ({ handleCreateBlog }) => {
+import blogService from '../services/blogs'
+
+import Togglable from './Togglable'
+
+const NewBlogForm = () => {
+	const queryClient = useQueryClient()
+	const notificationDispatch = useNotificationDispatch()
 
 	const [title, setTitle] = useState('')
 	const [author, setAuthor] = useState('')
@@ -10,9 +18,31 @@ const NewBlogForm = ({ handleCreateBlog }) => {
 
 	const togglableRef = useRef()
 
+	const createBlogMutation = useMutation({
+		mutationFn: blogService.create,
+		onSuccess: (newBlog) => {
+			const previousBlogs = queryClient.getQueryData(['blogs'])
+			queryClient.setQueryData(['blogs'], [...previousBlogs, newBlog])
+			const notificationConfig = {
+				message: `A new blog ${newBlog.title} by ${newBlog.author} added`,
+				type: 'success',
+				timeout: 5
+			}
+			notificationDispatch(setNotification(notificationConfig))
+		},
+		onError: (error) => {
+			const notificationConfig = {
+				message: error.response.data.error,
+				type: 'error',
+				timeout: 5
+			}
+			notificationDispatch(setNotification(notificationConfig))
+		}
+	})
+
 	const onSubmit = (event) => {
 		event.preventDefault()
-		handleCreateBlog({ title, author, url })
+		createBlogMutation.mutate({ title, author, url })
 		setTitle('')
 		setAuthor('')
 		setUrl('')

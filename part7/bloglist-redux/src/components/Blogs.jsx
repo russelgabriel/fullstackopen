@@ -1,15 +1,30 @@
 import { useSelector, useDispatch } from "react-redux";
+import styled from "styled-components";
 
-import { deleteBlog } from "../redux/reducers/blogsReducer";
 import { setNotification } from "../redux/reducers/notificationReducer";
+import { likeBlog, deleteBlog } from "../redux/reducers/blogsReducer";
 
 import Blog from "./Blog";
-import styled from "styled-components";
 
 const Blogs = ({ user }) => {
 	const dispatch = useDispatch()
+
 	let blogs = useSelector(state => state.blogs)
 	blogs = [...blogs].sort((a, b) => b.likes - a.likes)
+
+  const handleLikeBlog = async (blog) => {
+		try {
+			dispatch(likeBlog(blog));
+			// const notificationConfig = {
+			// 	message: `You liked ${blog.title} by ${blog.author}`,
+			// 	type: 'success',
+			// 	timeout: 5,
+			// }
+			// dispatch(setNotification(notificationConfig))
+		} catch (error) {
+			console.log(error);
+		}
+  };
 
 	const handleDeleteBlog = async (blog) => {
     try {
@@ -35,7 +50,8 @@ const Blogs = ({ user }) => {
           key={blog.id}
           blog={blog}
           user={user}
-          handleDeleteBlog={() => handleDeleteBlog(blog)}
+					handleLikeBlog={handleLikeBlog}
+					handleDeleteBlog={handleDeleteBlog}
         />
       ))}
     </Wrapper>

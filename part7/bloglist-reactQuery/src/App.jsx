@@ -1,36 +1,26 @@
 import { useState, useEffect } from 'react'
-import LoginForm from './components/LoginForm'
-import Home from './components/Home'
-import Notification from './components/Notification'
+
+import { useNotificationDispatch } from './context/NotificationContext'
+import { setNotification } from './context/NotificationContext'
+import { useUserDispatch, useUserValue } from './context/UserContext'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+import LoginForm from './components/LoginForm'
+import Home from './components/Home'
+import Notification from './components/Notification'
+
+
 const App = () => {
-	const [blogs, setBlogs] = useState([])
-	const [user, setUser] = useState(null)
-	const [showNotification, setShowNotification] = useState(false)
-	const [notificationMessage, setNotificationMessage] = useState('')
-	const [notificationType, setNotificationType] = useState('') // 'error' or 'success'
-
-	useEffect(() => {
-		const fetchBlogs = async () => {
-			try {
-				let initBlogs = await blogService.getAll()
-				initBlogs = initBlogs.sort((a, b) => b.likes - a.likes)
-				setBlogs(initBlogs)
-			} catch (error) {
-				console.log(error)
-			}
-		}
-
-		fetchBlogs()
-	}, [])
+	const notificationDispatch = useNotificationDispatch()
+	const userDispatch = useUserDispatch()
+	const user = useUserValue()
 
 	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-		if (loggedUserJSON) {
+		if (loggedUserJSON && loggedUserJSON !== 'null') {
 			const user = JSON.parse(loggedUserJSON)
-			setUser(user)
+			userDispatch({ type: 'SET_USER', payload: user })
 			blogService.setToken(user.token)
 		}
 	}, [])
@@ -39,30 +29,28 @@ const App = () => {
 		try {
 			const user = await loginService.login({ username, password })
 			window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-			setUser(user)
+			userDispatch({ type: 'SET_USER', payload: user })
 			blogService.setToken(user.token)
-			setShowNotification(false)
 		} catch (error) {
-			setNotificationType('error')
-			setNotificationMessage('Incorrect username or password')
-			setShowNotification(true)
+			console.log(error)
+			const notificationConfig = {
+				message: 'Incorrect username or password',
+				type: 'error',
+				timeout: 5
+			}
+			notificationDispatch(setNotification(notificationConfig))
 		}
 	}
 
 	const handleLogout = () => {
 		window.localStorage.removeItem('loggedBlogappUser')
-		setUser(null)
+		userDispatch({ type: 'CLEAR_USER' })
 	}
 
 	if (!user) {
 		return (
 			<div>
-				<Notification
-					message={notificationMessage}
-					isVisible={showNotification}
-					onHide={() => setShowNotification(false)}
-					type={notificationType}
-				/>
+				<Notification />
 				<LoginForm
 					handleLogin={handleLogin}
 				/>
@@ -72,20 +60,10 @@ const App = () => {
 
 	return (
 		<div>
-			<Notification
-				message={notificationMessage}
-				isVisible={showNotification}
-				onHide={() => setShowNotification(false)}
-				type={notificationType}
-			/>
+			<Notification	/>
 			<Home
-				blogs={blogs}
-				setBlogs={setBlogs}
 				user={user}
 				handleLogout={handleLogout}
-				setNotificationMessage={setNotificationMessage}
-				setShowNotification={setShowNotification}
-				setNotificationType={setNotificationType}
 			/>
 		</div>
 	)

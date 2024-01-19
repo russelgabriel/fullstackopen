@@ -56,7 +56,7 @@ describe('Blog app', function () {
 			cy.get('button[type="submit"]').click()
 			cy
 				.get('#notification')
-				.contains('a new blog')
+				.contains('A new blog')
 				.should('have.css', 'background-color', 'rgb(223, 240, 216)')
 		})
 

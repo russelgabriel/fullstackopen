@@ -1,37 +1,43 @@
-import styled, { keyframes, css } from 'styled-components'
-import { useState, useEffect } from 'react'
+import styled, { keyframes, css } from "styled-components";
+import { useState, useEffect } from "react";
 
-const Notification = ({ message, isVisible, onHide, type }) => {
-	const [visible, setVisible] = useState(false)
-	const [shouldRender, setShouldRender] = useState(isVisible)
+import { useNotificationValue, useNotificationDispatch } from "../context/NotificationContext";
 
-	useEffect(() => {
-		if (isVisible) {
-			setShouldRender(true)
-			setVisible(true)
-		} else {
-			setVisible(false)
-			setTimeout(() => setShouldRender(false), 500) // delay should match animation duration
+const Notification = () => {
+  const [visible, setVisible] = useState(false);
+
+	const notificationState = useNotificationValue()
+	const notificationDispatch = useNotificationDispatch()
+
+	const { message, type, timeout } = notificationState || {}
+
+  useEffect(() => {
+    setVisible(true);
+    const timer = setTimeout(() => {
+        setVisible(false);
+    }, timeout * 1000 - 500);
+
+		return () => {
+			clearTimeout(timer)
 		}
-	}, [isVisible])
+  }, [notificationState]);
 
-	useEffect(() => {
-		if (isVisible) {
-			const timeout = setTimeout(() => {
-				setVisible(false)
-				onHide()
-			}, 3000)
+	const handleClose = () => {
+		setVisible(false)
+		notificationDispatch({ type: "CLEAR_NOTIFICATION" })
+	}
 
-			return () => clearTimeout(timeout)
-		}
-	}, [isVisible, onHide])
+  if (!message || !type || !timeout) {
+    return null;
+  }
 
-	return shouldRender ? (
-		<Wrapper $visible={visible} $type={type} id='notification'>
-			{message}
-		</Wrapper>
-	) : null
-}
+  return (
+    <Wrapper $visible={visible} $type={type} id="notification">
+      {message}
+			<button style={{marginLeft: '20px', height: '30px', width: '30px'}} onClick={handleClose}>x</button>
+    </Wrapper>
+  );
+};
 
 // Keyframe animation for sliding in and out
 const slideIn = keyframes`
@@ -41,7 +47,7 @@ const slideIn = keyframes`
   to {
     transform: translateX(0);
   }
-`
+`;
 
 const slideOut = keyframes`
   from {
@@ -50,31 +56,32 @@ const slideOut = keyframes`
   to {
     transform: translateX(100%);
   }
-`
+`;
 
 const Wrapper = styled.div`
-	position: fixed;
-	top: 20px;
-	right: 20px;
-	padding: 20px;
-	border-radius: 5px;
-	animation: ${({ $visible }) => ($visible ? slideIn : slideOut)} 0.5s ease-in-out;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-	z-index: 1000;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 20px;
+  border-radius: 5px;
+  animation: ${({ $visible }) => ($visible ? slideIn : slideOut)} 0.5s
+    ease-in-out;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
 
   ${({ $type }) =>
-		$type === 'success' &&
+    $type === "success" &&
     css`
       background-color: #dff0d8;
       color: #3c763d;
     `}
 
   ${({ $type }) =>
-		$type === 'error' &&
+    $type === "error" &&
     css`
       background-color: #f2dede;
       color: #a94442;
     `}
-`
+`;
 
-export default Notification
+export default Notification;
