@@ -1,15 +1,14 @@
 # Full Stack open
 ### _My experience with the course_
 
-Full Stack open is a free online web development program where you learn React, Redux, Node.js, MongoDB, GraphQL and TypeScript. This was my introduction to modern JavaScript-based web development. I'll go over each of the 14 parts of the course, and reflect on some concepts I've learned. This document serves as a way for me to reinforce my learning, as well as give a general outline (albeit, a very simple outline) of what modern web development looks like for the uninitiated.
-
+Full Stack open is a free online web development program where you learn React, Redux, Node.js, MongoDB, GraphQL and TypeScript. This was my introduction to modern JavaScript-based web development. This document serves as a quick guide to setting up a React app using concepts learned from the course.
 
 ## Chapters
 
 - [__Part 0__: Fundamentals of Web apps](#part-0-fundamentals-of-web-apps)
-- __Part 1__: Introduction to React
-- __Part 2__: Communicating with server
-- __Part 3__: Programming a server with NodeJS and Express
+- [__Part 1__: Introduction to React](#part-1-introduction-to-react)
+- [__Part 2__: Communicating with server](#part-2-communicating-with-a-server)
+- [__Part 3__: Programming a server with NodeJS and Express](#part-3-programming-a-server-with-nodejs-and-express)
 - __Part 4__: Testing Express servers, user administration
 - __Part 5__: Testing React apps
 - __Part 6__: Advanced state management
@@ -21,159 +20,149 @@ Full Stack open is a free online web development program where you learn React, 
 - __Part 12__: Containers
 - __Part 13__: Using relational databases
 
-
-
 ## __Part 0__: Fundamentals of Web apps
 
-Dillinger uses a number of open source projects to work properly:
-
-- [AngularJS] - HTML enhanced for web apps!
-- [Ace Editor] - awesome web-based text editor
-- [markdown-it] - Markdown parser done right. Fast and easy to extend.
-- [Twitter Bootstrap] - great UI boilerplate for modern web apps
-- [node.js] - evented I/O for the backend
-- [Express] - fast node.js network app framework [@tjholowaychuk]
-- [Gulp] - the streaming build system
-- [Breakdance](https://breakdance.github.io/breakdance/) - HTML
-to Markdown converter
-- [jQuery] - duh
-
-And of course Dillinger itself is open source with a [public repository][dill]
- on GitHub.
-
-## Installation
-
-Dillinger requires [Node.js](https://nodejs.org/) v10+ to run.
-
-Install the dependencies and devDependencies and start the server.
-
-```sh
-cd dillinger
-npm i
-node app
-```
-
-For production environments...
-
-```sh
-npm install --production
-NODE_ENV=production node app
-```
-
-## Plugins
-
-Dillinger is currently extended with the following plugins.
-Instructions on how to use them in your own application are linked below.
-
-| Plugin | README |
+The concepts introduced here are very basic, so I'll go over each briefly in a table
+| Concept | Explanation |
 | ------ | ------ |
-| Dropbox | [plugins/dropbox/README.md][PlDb] |
-| GitHub | [plugins/github/README.md][PlGh] |
-| Google Drive | [plugins/googledrive/README.md][PlGd] |
-| OneDrive | [plugins/onedrive/README.md][PlOd] |
-| Medium | [plugins/medium/README.md][PlMe] |
-| Google Analytics | [plugins/googleanalytics/README.md][PlGa] |
+| HTTP GET | The fetching of a resource from a server. In HTTP protocol, the browser makes request to the server, which is then followed by a response from the server |
+| Traditional Web Applications | The browser is "dumb", and only fetches HTML data from the server, while all aplication logic is run on the server |
+| Event handlers and Callback functions | The application code does not invoke the functions itself, but the runtime environment - the browser, invokes the function at an appropriate time when the event has occurred |
+| DOM | The implicit tree structure of an HTML document. The DOM can be manipulated from the console |
+| Single page application | SPA-style websites don't fetch all of their pages separately from the server like our sample application does, but instead comprise only one HTML page fetched from the server, the contents of which are manipulated with JavaScript that executes in the browser |
 
-## Development
+These concepts are the bare minimum pre reqs for learning web development. We will start going more in depth in the following sections.
 
-Want to contribute? Great!
+## __Part 1:__ Introduction to React
+I'm not going to go over the basics of how React works, and I'll assume you already know JS and React syntax.
 
-Dillinger uses Gulp + Webpack for fast developing.
-Make a change in your file and instantaneously see your updates!
-
-Open your favorite Terminal and run these commands.
-
-First Tab:
-
+Start by creating a React project using Vite. 
 ```sh
-node app
+npm create vite@latest <project name> -- --template react
+```
+I used to use create-react-app, but this method is now deprecated.
+```sh
+npx create-react-app <project name>
+```
+After finishing this course, I want to dive into Next.js instead of using Vite.
+
+### Things to note
+- Changes in state cause a component to re render. Make sure changes in the backend are reflected in the application state
+- Hooks cannot be called from inside of a loop, a conditional expression, or any place that is not a function defining component.
+
+
+## __Part 2:__ Communicating with a server
+You can create a simple REST server using the [JSON Server](https://github.com/typicode/json-server) package. Create a *db.json* file to act as a mock database. JSON server automatically creates ids for new resources. Save it as a dev dependency since this is just a mock server to test requests made to the server from the front end.
+```sh
+npm i --save-dev json-server
+json-server --port <port number> --watch db.json
+```
+In order to make requests to the server, import the [axios](https://www.npmjs.com/package/axios) package. [Axios](https://www.npmjs.com/package/axios) is a promise-based HTTP client for the browser and node.js.
+```sh
+npm i axios
+```
+These axios methods return promises. You can use the result by using the `then` method. Later on, we will switch to using `async/await` syntax.
+```
+const promise = axios.get('http://localhost:3000/foo')
+promise.then(response => {
+    console.log(response)
+})
+
+// using chaining
+axios
+    .get('http://localhost:3000/foo')
+    .then(response => {
+        const stuff = response.data
+        console.log(stuff)
+    })
+```
+A promise is an object that represents an asynchronous operation. A promise can have three distinct states:
+- *pending*: the final value is not available yet
+- *fulfilled*: the operation has been completed and the final value is available, which generally is a succesful operation
+- *rejected*: An error prevented the final value from being determined, which generally represents a failed operation.
+
+React's `useEffect` hook is a hook that lets you perform side effects on function components. What is a side effect?
+> **Side Effect**
+> any operation that modifies the state of the computer or interacts with the outside world, beyond returning a value in response to a function call. This could include modifying a global variable, changing the value of a function's arguments, making a network request, writing to a database, manipulating the DOM, and so on.
+
+So, any operation that involves the outside world should be performed within a `useEffect` hook, like so:
+
+```
+let stuff
+useEffect(() => {
+    const response = axios.get('www.russel.com/api/bruh')
+    stuff = response.data
+}, [<dependencies>])
 ```
 
-Second Tab:
+As a rule of thumb, and in respect to the *single responsibility principle*, we'll place the logic of communicating with the server in its own module located in the *src/services* directory. An example of how this might look is like so:
 
+```
+import axios from 'axios'
+const baseUrl = 'http://localhost:3001/notes'
+
+const getAll = () => {
+  const request = axios.get(baseUrl)
+  return request.then(response => response.data)
+}
+
+const create = newObject => {
+  const request = axios.post(baseUrl, newObject)
+  return request.then(response => response.data)
+}
+
+const update = (id, newObject) => {
+  const request = axios.put(`${baseUrl}/${id}`, newObject)
+  return request.then(response => response.data)
+}
+
+export default { getAll, create, update }
+```
+Keep in mind that each resource should have its own associated service.
+
+### Things to note
+- When mapping through an array to create elements, try not to use the index as a key for the element
+- The rejection of a promises must be handled gracefully. This is easy to do either with chaining the `catch` method if using the `then` syntax, or with a `try/catch` block if using `async/await` syntax.
+
+## __Part 3:__ Programming a server with NodeJS and Express
+Now we can start creating our own server instead of relying on the [JSON server](https://github.com/typicode/json-server) package.
+
+Create a directory, then run 
 ```sh
-gulp watch
+npm init
+```
+A *package.json* file will automatically be created at the root of the directory with the following contents.
+```
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matti Luukkainen",
+  "license": "MIT"
+}
 ```
 
-(optional) Third:
+We will build our backend using [Express](https://expressjs.com/). In order for the express application to to parse JSON data sent in the request body, the [Express](https://expressjs.com/) app `const app = express()` must use the built in express json-parser middle ware like so: `app.use(express.json())`. When making requests, ensure that the `Content-Type` header is set to `application/json`.
 
-```sh
-karma test
-```
+### Important Dependencies
+| Package  | Use  |
+| ------ | ------ |
+| [Express](https://expressjs.com/) | Used to create the backend application that can respond to requests made at different routes. The app is created like this: `const app = express()` |
+| [Nodemon](https://github.com/remy/nodemon) | Save as a dev dependency. This package will watch files in the directory and will restart the application if any file changes are saved. This is only if the app is started using `nodemon index.js` instead of `node index.js` |
+|  |  |
 
-#### Building for source
+### Things to note
+- Test requests made to your server by either using [Postman](https://www.postman.com/) or the VS Code [REST Client](https://github.com/Huachao/vscode-restclient)
 
-For production release:
 
-```sh
-gulp build --prod
-```
 
-Generating pre-built zip archives for distribution:
 
-```sh
-gulp build dist --prod
-```
 
-## Docker
 
-Dillinger is very easy to install and deploy in a Docker container.
 
-By default, the Docker will expose port 8080, so change this within the
-Dockerfile if necessary. When ready, simply use the Dockerfile to
-build the image.
 
-```sh
-cd dillinger
-docker build -t <youruser>/dillinger:${package.json.version} .
-```
 
-This will create the dillinger image and pull in the necessary dependencies.
-Be sure to swap out `${package.json.version}` with the actual
-version of Dillinger.
-
-Once done, run the Docker image and map the port to whatever you wish on
-your host. In this example, we simply map port 8000 of the host to
-port 8080 of the Docker (or whatever port was exposed in the Dockerfile):
-
-```sh
-docker run -d -p 8000:8080 --restart=always --cap-add=SYS_ADMIN --name=dillinger <youruser>/dillinger:${package.json.version}
-```
-
-> Note: `--capt-add=SYS-ADMIN` is required for PDF rendering.
-
-Verify the deployment by navigating to your server address in
-your preferred browser.
-
-```sh
-127.0.0.1:8000
-```
-
-## License
-
-MIT
-
-**Free Software, Hell Yeah!**
-
-[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
-
-   [dill]: <https://github.com/joemccann/dillinger>
-   [git-repo-url]: <https://github.com/joemccann/dillinger.git>
-   [john gruber]: <http://daringfireball.net>
-   [df1]: <http://daringfireball.net/projects/markdown/>
-   [markdown-it]: <https://github.com/markdown-it/markdown-it>
-   [Ace Editor]: <http://ace.ajax.org>
-   [node.js]: <http://nodejs.org>
-   [Twitter Bootstrap]: <http://twitter.github.com/bootstrap/>
-   [jQuery]: <http://jquery.com>
-   [@tjholowaychuk]: <http://twitter.com/tjholowaychuk>
-   [express]: <http://expressjs.com>
-   [AngularJS]: <http://angularjs.org>
-   [Gulp]: <http://gulpjs.com>
-
-   [PlDb]: <https://github.com/joemccann/dillinger/tree/master/plugins/dropbox/README.md>
-   [PlGh]: <https://github.com/joemccann/dillinger/tree/master/plugins/github/README.md>
-   [PlGd]: <https://github.com/joemccann/dillinger/tree/master/plugins/googledrive/README.md>
-   [PlOd]: <https://github.com/joemccann/dillinger/tree/master/plugins/onedrive/README.md>
-   [PlMe]: <https://github.com/joemccann/dillinger/tree/master/plugins/medium/README.md>
-   [PlGa]: <https://github.com/RahulHP/dillinger/blob/master/plugins/googleanalytics/README.md>
