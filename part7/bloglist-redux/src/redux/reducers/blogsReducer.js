@@ -30,7 +30,7 @@ export const initializeBlogs = () => {
 
 export const addBlog = (blog) => {
 	return async dispatch => {
-		const newBlog = await blogService.create({...blog, likes: 0})
+		const newBlog = await blogService.create({...blog, likes: 0, comments: []})
 		dispatch(blogsSlice.actions.addBlog(newBlog))
 	}
 }
@@ -46,6 +46,16 @@ export const likeBlog = (blog) => {
 	return async dispatch => {
 		const updatedBlogObject = {...blog, likes: blog.likes + 1}
 		const updatedBlog = await blogService.update(blog.id, updatedBlogObject)
+		dispatch(blogsSlice.actions.updateBlog(updatedBlog))
+	}
+}
+
+export const addComment = (id, comment) => {
+	return async dispatch => {
+		await blogService.createComment(id, comment)
+		const blogToUpdate = await blogService.getBlog(id)
+		const updatedBlogObject = {...blogToUpdate }
+		const updatedBlog = await blogService.update(id, updatedBlogObject)
 		dispatch(blogsSlice.actions.updateBlog(updatedBlog))
 	}
 }

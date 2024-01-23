@@ -1,9 +1,37 @@
 import styled from "styled-components";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-const LoginForm = ({ handleLogin }) => {
+import loginService from "../services/login";
+import blogService from "../services/blogs";
+import { setNotification } from "../redux/reducers/notificationReducer";
+import { setUser } from "../redux/reducers/userReducer";
+
+const LoginView = () => {
+	const dispatch = useDispatch()
+	const navigate = useNavigate()
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+	const handleLogin = async ({ username, password }) => {
+    try {
+      const loggedInUser = await loginService.login({ username, password });
+      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(loggedInUser));
+      dispatch(setUser(loggedInUser))
+      blogService.setToken(loggedInUser.token);
+			navigate('/')
+    } catch (error) {
+			console.log(error)
+			const notificationConfig = {
+				message: 'Incorrect username or password',
+				type: 'error',
+				timeout: 5
+			}
+			dispatch(setNotification(notificationConfig))
+    }
+  };
 
   const onLogin = (event) => {
     event.preventDefault();
@@ -78,4 +106,4 @@ const Button = styled.button`
   height: 50px;
 `;
 
-export default LoginForm;
+export default LoginView 

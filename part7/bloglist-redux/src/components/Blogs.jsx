@@ -6,8 +6,9 @@ import { likeBlog, deleteBlog } from "../redux/reducers/blogsReducer";
 
 import Blog from "./Blog";
 
-const Blogs = ({ user }) => {
+const Blogs = () => {
 	const dispatch = useDispatch()
+	const user = useSelector(state => state.user)
 
 	let blogs = useSelector(state => state.blogs)
 	blogs = [...blogs].sort((a, b) => b.likes - a.likes)

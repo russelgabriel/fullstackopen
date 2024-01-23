@@ -168,6 +168,24 @@ describe('POST requests', () => {
 		expect(savedBlog.likes).toBe(0)
 	})
 
+	test('missing comments property defaults to []', async () => {
+		const newBlog = {
+			title: 'Test Blog',
+			author: 'Test Author',
+			url: 'https://testblog.com',
+		}
+
+		const response = await agent
+			.post('/api/blogs')
+			.send(newBlog)
+			.expect(201)
+			.expect('Content-Type', /application\/json/)
+
+		const savedBlog = response.body
+
+		expect(savedBlog.comments).toEqual([])
+	})
+
 	test('missing title or url properties should return 400 Bad Request', async () => {
 		const newBlog = {
 			author: 'Test Author',
@@ -193,6 +211,25 @@ describe('POST requests', () => {
 			.post('/api/blogs')
 			.send(newBlog)
 			.expect(401)
+	})
+
+	test('creating a comment for a blog post', async () => {
+		const blogsBeforeComment = await helper.blogsInDb()
+		const blogToComment = blogsBeforeComment[0]
+		const comment = {
+			content: 'This is a comment'
+		}
+
+		await agent
+			.post(`/api/blogs/${blogToComment.id}/comments`)
+			.send(comment)
+			.expect(201)
+			.expect('Content-Type', /application\/json/)
+
+		const blogsAfterComment = await helper.blogsInDb()
+		const updatedBlog = blogsAfterComment.find(blog => blog.id === blogToComment.id)
+
+		expect(updatedBlog.comments).toHaveLength(blogToComment.comments.length + 1)
 	})
 })
 

@@ -1,19 +1,22 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Routes, Route } from "react-router-dom";
 
-import { setNotification } from "./redux/reducers/notificationReducer";
 import { initializeBlogs } from "./redux/reducers/blogsReducer";
 import { setUser } from "./redux/reducers/userReducer";
 import blogService from "./services/blogs";
-import loginService from "./services/login";
 
-import LoginForm from "./components/LoginForm";
-import Home from "./components/Home";
+import HomeView from "./views/HomeView";
 import Notification from "./components/Notification";
+import Header from "./components/Header";
+
+import LoginView from "./views/LoginView";
+import UsersView from "./views/UsersView";
+import SingleUserView from "./views/SingleUserView";
+import SingleBlogView from "./views/SingleBlogView";
 
 const App = () => {
 	const dispatch = useDispatch()
-	const user = useSelector(state => state.user)
 
 	useEffect(() => {
 		dispatch(initializeBlogs())
@@ -28,46 +31,22 @@ const App = () => {
     }
   }, []);
 
-  const handleLogin = async ({ username, password }) => {
-    try {
-      const loggedInUser = await loginService.login({ username, password });
-      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
-      dispatch(setUser(loggedInUser))
-      blogService.setToken(loggedInUser.token);
-    } catch (error) {
-			console.log(error)
-			const notificationConfig = {
-				message: 'Incorrect username or password',
-				type: 'error',
-				timeout: 5
-			}
-			dispatch(setNotification(notificationConfig))
-    }
-  };
-
-  const handleLogout = () => {
-    window.localStorage.removeItem("loggedBlogappUser");
-    dispatch(setUser(null))
-  };
-
-  if (!user) {
-    return (
-      <div>
-        <Notification />
-        <LoginForm handleLogin={handleLogin} />
-      </div>
-    );
-  }
-
   return (
     <div>
+			<Header />
       <Notification />
-      <Home
-        user={user}
-        handleLogout={handleLogout}
-      />
+
+			<Routes>
+				<Route path="/login" element={<LoginView />} />
+				<Route path="/" element={<HomeView />} />
+				<Route path="/users" element={<UsersView />} />
+				<Route path="/users/:id" element={<SingleUserView />} />
+				<Route path="/blogs/:id" element={<SingleBlogView />} />
+			</Routes>
     </div>
   );
+
+
 };
 
 export default App;

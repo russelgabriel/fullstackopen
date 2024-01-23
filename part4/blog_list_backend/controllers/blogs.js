@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const Comment = require('../models/comment')
 
 blogsRouter.get('/', async (request, response, next) => {
 	try {
@@ -13,11 +14,25 @@ blogsRouter.get('/', async (request, response, next) => {
 	}
 })
 
+blogsRouter.get('/:id', async (request, response, next) => {
+	try {
+		const blog = await Blog
+			.findById(request.params.id)
+			.populate('user', { username: 1, name: 1, id: 1 })
+			.populate('comments', { content: 1, id: 1 })
+		if (blog) {
+			response.json(blog)
+		} else {
+			response.status(404).end()
+		}
+	} catch (error) {
+		next(error)
+	}
+})
+
 blogsRouter.post('/', async (request, response, next) => {
 	try {
 		const blog = new Blog(request.body)
-
-		console.log(request.headers)
 
 		if (!request.token) {
 			return response.status(401).json({
@@ -41,6 +56,10 @@ blogsRouter.post('/', async (request, response, next) => {
 			blog.likes = 0
 		}
 
+		if (!blog.comments) {
+			blog.comments = []
+		}
+
 		const user = await User.findById(request.user)
 		blog.user = user
 		const savedBlog = await blog.save()
@@ -51,6 +70,23 @@ blogsRouter.post('/', async (request, response, next) => {
 		await freshUser.save()
 
 		response.status(201).json(savedBlog)
+	} catch (error) {
+		next(error)
+	}
+})
+
+blogsRouter.post('/:id/comments', async (request, response, next) => {
+	try {
+		const comment = new Comment(request.body)
+		const blog = await Blog.findById(request.params.id)
+		comment.blog = blog
+		const savedComment = await comment.save()
+
+		const freshBlog = await Blog.findById(blog._id)
+		freshBlog.comments = freshBlog.comments.concat(savedComment._id)
+		await freshBlog.save()
+
+		response.status(201).json(savedComment)
 	} catch (error) {
 		next(error)
 	}
@@ -104,8 +140,18 @@ blogsRouter.put('/:id', async (request, response, next) => {
 		if (blogData.user && typeof blogData.user === 'object' && blogData.user.id) {
 			blogData.user = blogData.user.id
 		}
+
+		if (blogData.comments && Array.isArray(blogData.comments)) {
+			for (let idx = 0; idx < blogData.comments.length; idx++) {
+				if (blogData.comments[idx] && typeof blogData.comments[idx] === 'object' && blogData.comments[idx].id) {
+					blogData.comments[idx] = blogData.comments[idx].id
+				}
+			}
+		}
+
 		const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, request.body, { new: true })
 			.populate('user', { username: 1, name: 1, id: 1 })
+			.populate('comments', { content: 1, id: 1 })
 		if (!updatedBlog) {
 			return response.status(404).json({
 				error: 'Blog not found'

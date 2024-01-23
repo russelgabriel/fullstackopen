@@ -1,20 +1,49 @@
 import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 
-const Header = ({ user, handleLogout }) => {
+import { setUser } from "../redux/reducers/userReducer";
+
+const Header = () => {
+	const dispatch = useDispatch()
+	const user = useSelector(state => state.user)
+
+	const handleLogout = () => {
+    window.localStorage.removeItem("loggedBlogappUser");
+    dispatch(setUser(null))
+  };
+
+	const userLogout = () => {
+		return (
+			<UserLogout>
+				Hello, {user.name}
+				<Button onClick={handleLogout}>logout</Button>
+			</UserLogout>
+		)
+	}
+
   return (
     <Wrapper>
-      <Spacer />
+      <NavLinks>
+				<Link to="/">Home</Link>
+				<Link to="/users">Users</Link>
+			</NavLinks>
       <Title>Blogs List</Title>
-      <UserLogout>
-        Hello, {user.name}
-        <Button onClick={handleLogout}>logout</Button>
-      </UserLogout>
+			{user
+				?	userLogout()
+				: <Link to="/login" >Login</Link>
+			}
     </Wrapper>
   );
 };
 
+const NavLinks = styled.nav`
+	width: 100%;
+	display: flex;
+	gap: 8px;
+`
+
 const Wrapper = styled.div`
-  grid-area: header;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   justify-items: center;
@@ -32,6 +61,10 @@ const UserLogout = styled.div`
   align-items: flex-end;
   gap: 0.5rem;
 `;
+
+const UserLogin = styled.div`
+
+`
 
 const Title = styled.div`
   font-size: 2rem;

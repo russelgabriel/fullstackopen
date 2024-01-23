@@ -25,7 +25,7 @@ const Blog = ({ blog, user, handleLikeBlog, handleDeleteBlog }) => {
           <button onClick={onLike}>like</button>
         </p>
         <p>added by {blog.user.name}</p>
-        {user.username === blog.user.username ? (
+        {user && user.username === blog.user.username ? (
           <DeleteButton onClick={onDelete}>
             remove
           </DeleteButton>
