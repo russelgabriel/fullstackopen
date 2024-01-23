@@ -14,6 +14,8 @@ const CommentForm = ({ blogId }) => {
 		const commentObject = {
 			content: comment
 		}
+		// This action creator returns an async function
+		// await is necessary to invalidate the cache
 		await dispatch(addComment(blogId, commentObject))
 		queryClient.invalidateQueries(['blogs', blogId])
 		setComment('')
