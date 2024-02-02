@@ -15,7 +15,8 @@ const resolvers = {
 			if (!args.phone) {
 				return await Person.find({});
 			}
-			return await Person.find({ phone: { $exists: args.phone === 'YES' } });
+			return await Person.find({ phone: { $exists: args.phone === 'YES' } })
+				.populate('friendOf');
 		},
 		findPerson: async (root, args) => {
 			const person = await Person.findOne({ name: args.name });

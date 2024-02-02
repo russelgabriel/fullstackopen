@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { useNavigate } from 'react-router-dom'
+import { Store } from 'react-notifications-component'
 
 import { CREATE_BOOK, GET_AUTHORS, GET_BOOKS } from '../queries'
 
@@ -13,12 +14,23 @@ const NewBook = () => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
-  const [ createBook, result ] = useMutation(CREATE_BOOK, {
+  const [ createBook ] = useMutation(CREATE_BOOK, {
     refetchQueries: [ { query: GET_BOOKS }, { query: GET_AUTHORS } ],
     onError: (error) => {
       console.log(error);
     },
-    onSuccess: (data) => {
+    onCompleted: (data) => {
+      Store.addNotification({
+        title: 'Book created',
+        message: `Book ${data.addBook.title} by ${data.addBook.author.name} has been added`,
+        type: 'success',
+        insert: 'top',
+        container: 'top-right',
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      })
       navigate('/books')
     }
   })

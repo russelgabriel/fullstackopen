@@ -31,6 +31,8 @@ mongoose
 		console.log('error connection to MongoDB:', error.message);
 	});
 
+mongoose.set('debug', true);
+
 const start = async () => {
 	const app = express();
 
@@ -89,8 +91,6 @@ const start = async () => {
 		})
 	);
 	const PORT = 4000;
-
-	// 333 / 10882
 	
 	httpServer.listen(PORT, () => {
 		console.log(`Server is now running on http://localhost:${PORT}`);
