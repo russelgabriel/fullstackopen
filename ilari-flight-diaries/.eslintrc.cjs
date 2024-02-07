@@ -28,5 +28,5 @@ module.exports = {
     "project": "./tsconfig.json",
 		'tsconfigRootDir': __dirname,
   },
-	"ignorePatterns": [".eslintrc.cjs", "node_modules/"]
+	"ignorePatterns": [".eslintrc.cjs", "node_modules/", "build/"]
 }

@@ -21,12 +21,13 @@ module.exports = {
       "error",
       { "argsIgnorePattern": "^_" }
     ],
-    "no-case-declarations": "off"
+    "no-case-declarations": "off",
+    "quotes": ["error", "double"],
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json",
 		'tsconfigRootDir': __dirname,
   },
-	"ignorePatterns": [".eslintrc.cjs"]
+	"ignorePatterns": [".eslintrc.cjs", "node_modules/", "build/"]
 }
