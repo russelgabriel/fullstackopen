@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+  "name": "Rastaclat Jafari",
+  "dateOfBirth": "1990-01-01",
+  "ssn": "010190-123",
+  "gender": "male",
+  "occupation": "Rapper"
+}
